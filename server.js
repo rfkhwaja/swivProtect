@@ -78,7 +78,7 @@ const PAIRS = [['state', 'age_group'], ['state', 'language'], ['age_group', 'lan
 // ---- databases: live.db (accounts, reports, alerts) + catalog.db (static scam catalog) ----
 const catalogPath = path.join(DATA, 'catalog.db');
 if (!fs.existsSync(catalogPath)) { console.error('catalog.db not found. Run: npm run setup'); process.exit(1); }
-const db = new DatabaseSync(
+// const db = new DatabaseSync(
   process.env.DB_PATH || path.join(DATA, 'live.db')
 );
 db.exec('PRAGMA foreign_keys = ON');
