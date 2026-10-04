@@ -78,9 +78,14 @@ const PAIRS = [['state', 'age_group'], ['state', 'language'], ['age_group', 'lan
 // ---- databases: live.db (accounts, reports, alerts) + catalog.db (static scam catalog) ----
 const catalogPath = path.join(DATA, 'catalog.db');
 if (!fs.existsSync(catalogPath)) { console.error('catalog.db not found. Run: npm run setup'); process.exit(1); }
-// const db = new DatabaseSync(
-//  process.env.DB_PATH || path.join(DATA, 'live.db')
-// );
+
+const dbPath = process.env.DB_PATH || path.join(DATA, 'live.db');
+
+// Create the database's parent folder if it doesn't exist.
+fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+
+const db = new DatabaseSync(dbPath);
+
 db.exec('PRAGMA foreign_keys = ON');
 if (!db.prepare("SELECT 1 FROM sqlite_master WHERE name='users'").get()) db.exec(fs.readFileSync(path.join(DATA, 'live_schema.sql'), 'utf8'));
 if (!db.prepare('PRAGMA table_info(users)').all().some(c => c.name === 'google_email')) db.exec('ALTER TABLE users ADD COLUMN google_email TEXT');
